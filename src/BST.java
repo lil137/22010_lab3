@@ -8,6 +8,8 @@
  *
  *************************************************************************/
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.NoSuchElementException;
 
 public class BST<Key extends Comparable<Key>, Value> {
@@ -212,21 +214,21 @@ public class BST<Key extends Comparable<Key>, Value> {
      * @return a multi-line string with the pretty ascii picture of the tree.
      */
     public String prettyPrintKeys() {
-    	//return prettyPrint(root,"");
-      //TODO fill in the correct implementation.
-    	return null;
+    	return prettyPrint(root,"-");
     }
     
-    /*private String prettyPrintKeys(Node x) {
-    	if (isEmpty()) {
-    		return "-null\n";
+    private String prettyPrint(Node x, String prefix) {
+    	if(x == null) {
+    		String str = prefix + "null\n"; 
+    		return str;
+    	}else{
+    		String str = prefix + x.key + "\n";
+    		String prefix_right = " " + prefix;
+    		String prefix_left = " " + "|" + prefix;
+    		return prettyPrint(x.left, prefix_left) + str + prettyPrint(x.right, prefix_right);
     	}
-    }*/
-    
-    
-    /*private String prettyPrint(Node<Key,Value> node, String prefix) {
-    	
-    }*/
+    	//return "123";
+    }
 
     /**
      * Deteles a key from a tree (if the key is in the tree).
@@ -239,6 +241,10 @@ public class BST<Key extends Comparable<Key>, Value> {
     public void delete(Key key) {
     	//TODO fill in the correct implementation.
     	delete(root,key);	
+    }
+    
+    public Node getKey(Key key) {
+    	return getKey(root,key);
     }
     
     private Node getKey(Node x, Key key) {
@@ -257,10 +263,11 @@ public class BST<Key extends Comparable<Key>, Value> {
     	
     }
     
+    public Node getParent(Key key) {
+    	return getParent(root,key);
+    }
+    
     private Node getParent(Node x, Key key) {
-    	
-    	System.out.println("key " + key);
-    	System.out.println("x-key " + x.key);
     	if( isEmpty()) {
     		return null;
     	}
@@ -270,15 +277,10 @@ public class BST<Key extends Comparable<Key>, Value> {
     	}
     		
     	int cmp = key.compareTo(x.key);
-    	System.out.println("check1");
-    	System.out.println(cmp);
-    	
     	if( cmp == 0) {
     		return null;
     	}else if( cmp < 0) {
     		int cmp_left = key.compareTo((x.left).key);
-    		System.out.println(x.left.key);
-    		System.out.println("cmp_left" + cmp_left);
     		if(cmp_left == 0) {
     			return x;
     		}else {
@@ -292,30 +294,7 @@ public class BST<Key extends Comparable<Key>, Value> {
     			return getParent(x.right, key);
     		}
     	}
-    	
-    	/*int cmp_left = 1;
-    	int cmp_right =1;
-    	if(x.left != null) {
-    		cmp_left = key.compareTo(x.left.key);
-    	}
-    	
-    	if(x.right != null) {
-    		cmp_right = key.compareTo(x.right.key);
-    	}
-    	
-    	System.out.println(cmp_left);
-    	System.out.println(cmp_right);*/
-    	/*if(cmp_left == 0 || cmp_right == 0) {
-    		return x;
-    	}else if(cmp > 0) {
-    		return getParent(x.right,key);
-    	}else{
-    		return getParent(x.left,key);
-    	}*/
-    	
-    	
-    	
-    	
+  	
     }
     
     private void delete(Node x, Key key) {
@@ -329,7 +308,7 @@ public class BST<Key extends Comparable<Key>, Value> {
 	
         Node temp = getKey(root,key);
         if(temp.left== null && temp.right == null) {
-        	Node parent = getParent(root,temp.key);
+        	Node parent = getParent(temp.key);
         	int cmp = key.compareTo(parent.key);
         	if(cmp > 0) {
         		parent.right = null;
@@ -339,12 +318,12 @@ public class BST<Key extends Comparable<Key>, Value> {
         	
         	while(parent != null) {
         		parent.N--;
-        		parent = getParent(root,parent.key);
+        		parent = getParent(parent.key);
         	}
         	
         	return;
         }else if(temp.left == null || temp.right == null) {
-        	Node parent = getParent(root,temp.key);
+        	Node parent = getParent(temp.key);
         	
         	int cmp = key.compareTo(parent.key);
         	if(temp.left == null) {
@@ -363,38 +342,53 @@ public class BST<Key extends Comparable<Key>, Value> {
         	
         	while(parent != null) {
         		parent.N--;
-        		parent = getParent(root,parent.key);
+        		parent = getParent(parent.key);
         	}
         	
         	return;
         }else {
         	Node imm_smaller = temp.left;
-        	System.out.println(imm_smaller.key);
         	while(imm_smaller.right != null) {
         		imm_smaller = imm_smaller.right;
         	}
-        	System.out.println(imm_smaller.key); //2
+
+        	Node parent = getParent(imm_smaller.key);
         	temp.key = imm_smaller.key;
-        	temp.val = imm_smaller.val;
-        		
-        	Node parent = getParent(root,imm_smaller.key);
-        	temp.key = imm_smaller.key;
-        	temp.val = imm_smaller.val;
-        	System.out.println("pk" + parent.key);
+        	temp.val = imm_smaller.val;     		
         	if(imm_smaller.left == null) {
         		parent.right = null;
         	}else {
         		parent.right = imm_smaller.left;
         	}  
 
-        	//Node parent = getParent(root,imm_smaller.key);
         	while(parent != null) {
             	parent.N--;
-            	parent = getParent(root,parent.key);
+            	parent = getParent(parent.key);
             }
         	
         	return;
         }
     	
     }
+    
+    public static void main(String[] args) {
+    	BST<Integer, Integer> bst = new BST<Integer, Integer>();
+		 
+		 bst.put(7, 7);
+		 bst.put(8, 8); 
+	     bst.put(3, 3);      
+	     bst.put(1, 1); 
+	     bst.put(2, 2);      
+	     bst.put(6, 6);     
+	     bst.put(4, 4);       
+	     bst.put(5, 5); 
+	     bst.delete(8);
+	     System.out.println(bst.getKey(7).N);
+	     bst.delete(6);
+	     System.out.println(bst.getKey(7).N);
+	     bst.delete(3);
+	     System.out.println(bst.getKey(7).N);
+	     
+    }
+    
 }

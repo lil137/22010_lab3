@@ -94,7 +94,7 @@ public class BSTTest
   
   /** <p>Test {@link BST#prettyPrintKeys()}.</p> */
       
-	
+	@Test
 	public void testPrettyPrint() {
 		BST<Integer, Integer> bst = new BST<Integer, Integer>();
 		assertEquals("Checking pretty printing of empty tree",
@@ -105,6 +105,10 @@ public class BSTTest
                           //   | |-1
                           //   | | |-null
      bst.put(7, 7);       //   | |  -2
+     String test1 = "-7\n" +
+    		 		" |-null\n" +
+    		 		"  -null\n";
+     assertEquals(test1,bst.prettyPrintKeys());
      bst.put(8, 8);       //   | |   |-null
      bst.put(3, 3);       //   | |    -null
      bst.put(1, 1);       //   |  -6
@@ -139,7 +143,6 @@ public class BSTTest
      assertEquals("Checking pretty printing of non-empty tree", result, bst.prettyPrintKeys());
      }
 
-  
      /** <p>Test {@link BST#delete(Comparable)}.</p> */
      @Test
      public void testDelete() {
@@ -174,6 +177,7 @@ public class BSTTest
          bst.delete(3);
          assertEquals("Deleting node with two children",
                  "(((()1())2(()4(()5())))7())", bst.printKeysInOrder());
+        
      }
      
 }
