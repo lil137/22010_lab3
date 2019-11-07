@@ -14,7 +14,7 @@ import java.util.NoSuchElementException;
 
 public class BST<Key extends Comparable<Key>, Value> {
     private Node root;             // root of BST
-
+    
     /**
      * Private node class.
      */
@@ -29,6 +29,7 @@ public class BST<Key extends Comparable<Key>, Value> {
             this.val = val;
             this.N = N;
         }
+        
     }
 
     // is the symbol table empty?
@@ -131,6 +132,9 @@ public class BST<Key extends Comparable<Key>, Value> {
 
     
     public Key select(int n) {
+    	if( isEmpty()) {
+    		return null;
+    	}
     	if (n < 0 || n >= size()) {
     		return null;
     	}
@@ -139,9 +143,9 @@ public class BST<Key extends Comparable<Key>, Value> {
     }
     	
     private Node select(Node x, int n) {
-    	if (x == null) {
+    	/*if (x == null) {
     		return null;
-    	}
+    	}*/
     	int t = size(x.left);
     	if (t > n) {
     		return select(x.left, n);
@@ -150,6 +154,7 @@ public class BST<Key extends Comparable<Key>, Value> {
     	}else {
     		return x;
     	}
+    	
     }
     
     /**
@@ -214,20 +219,19 @@ public class BST<Key extends Comparable<Key>, Value> {
      * @return a multi-line string with the pretty ascii picture of the tree.
      */
     public String prettyPrintKeys() {
-    	return prettyPrint(root,"-");
+    	return prettyPrint(root,"");
     }
     
     private String prettyPrint(Node x, String prefix) {
     	if(x == null) {
-    		String str = prefix + "null\n"; 
+    		String str = prefix + "-null\n"; 
     		return str;
     	}else{
-    		String str = prefix + x.key + "\n";
-    		String prefix_right = " " + prefix;
-    		String prefix_left = " " + "|" + prefix;
-    		return prettyPrint(x.left, prefix_left) + str + prettyPrint(x.right, prefix_right);
+    		String str = prefix + "-" + x.key + "\n";
+    		String prefix_left = prefix + " " + "|";
+    		String prefix_right = prefix_left.substring(0, prefix_left.length()-1) + " ";	
+    		return str + prettyPrint(x.left, prefix_left) + prettyPrint(x.right, prefix_right);
     	}
-    	//return "123";
     }
 
     /**
@@ -272,9 +276,6 @@ public class BST<Key extends Comparable<Key>, Value> {
     		return null;
     	}
     	
-    	if(!contains(key)) {
-    		return null;
-    	}
     		
     	int cmp = key.compareTo(x.key);
     	if( cmp == 0) {
@@ -306,7 +307,35 @@ public class BST<Key extends Comparable<Key>, Value> {
     		return;
     	}
 	
-        Node temp = getKey(root,key);
+        Node temp = getKey(key);
+        if(temp == root) {
+        	if( size() == 1) {
+        		root = null;
+        		return;
+        	}else if(root.right == null){
+        		root = root.left;
+        		return;
+        	}else if(root.left == null) {
+        		root = root.right; 
+        		return;
+        	}else {
+        		Node imm_smaller = root.left;
+            	while(imm_smaller.right != null) {
+            		imm_smaller = imm_smaller.right;
+            	}
+            	Node parent = getParent(imm_smaller.key);
+            	root.val = imm_smaller.val;
+            	root.key = imm_smaller.key;
+            	
+            	if(parent == root) {
+            		parent.left = imm_smaller.left;
+            		return;
+            	}         	
+            	parent.right = imm_smaller.left;
+            	return;
+        	
+        	}
+        }
         if(temp.left== null && temp.right == null) {
         	Node parent = getParent(temp.key);
         	int cmp = key.compareTo(parent.key);
@@ -353,14 +382,18 @@ public class BST<Key extends Comparable<Key>, Value> {
         	}
 
         	Node parent = getParent(imm_smaller.key);
-        	temp.key = imm_smaller.key;
-        	temp.val = imm_smaller.val;     		
-        	if(imm_smaller.left == null) {
-        		parent.right = null;
+        	if(parent == temp) {
+        		parent.key = imm_smaller.key;
+        		parent.val = imm_smaller.val;
+        		parent.left = null;
         	}else {
+        		temp.key = imm_smaller.key;
+        		temp.val = imm_smaller.val;     		
+        		
         		parent.right = imm_smaller.left;
-        	}  
-
+        	
+        	}
+        	
         	while(parent != null) {
             	parent.N--;
             	parent = getParent(parent.key);
@@ -370,25 +403,4 @@ public class BST<Key extends Comparable<Key>, Value> {
         }
     	
     }
-    
-    public static void main(String[] args) {
-    	BST<Integer, Integer> bst = new BST<Integer, Integer>();
-		 
-		 bst.put(7, 7);
-		 bst.put(8, 8); 
-	     bst.put(3, 3);      
-	     bst.put(1, 1); 
-	     bst.put(2, 2);      
-	     bst.put(6, 6);     
-	     bst.put(4, 4);       
-	     bst.put(5, 5); 
-	     bst.delete(8);
-	     System.out.println(bst.getKey(7).N);
-	     bst.delete(6);
-	     System.out.println(bst.getKey(7).N);
-	     bst.delete(3);
-	     System.out.println(bst.getKey(7).N);
-	     
-    }
-    
 }

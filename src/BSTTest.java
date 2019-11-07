@@ -17,6 +17,55 @@ import org.junit.runners.JUnit4;
 public class BSTTest
 {
   
+	@Test
+	public void Testput() {
+		BST<Integer, Integer> bst = new BST<Integer, Integer>();
+		bst.put(7, 7);
+		bst.put(7, null);
+		assertEquals("()",bst.printKeysInOrder());
+		
+		bst.put(7, 7);
+		bst.put(7, 2);
+		
+		//Integer val = bst.get(7);
+		Integer exp = 2;
+		assertEquals(exp, (bst.get(7)));		
+		assertEquals("(()7())",bst.printKeysInOrder());
+		
+	}
+	
+	@Test
+	public void Testselect() {
+		BST<Integer, Integer> bst = new BST<Integer, Integer>();
+		assertEquals(null,bst.select(0));
+		
+		bst.put(7, 7);
+			
+	    bst.put(3, 3); 
+	    assertEquals(3,(int)bst.select(0));
+	    
+	    bst.put(8, 8); 
+	    bst.put(1, 1); 
+	    bst.put(2, 2);      
+	    bst.put(6, 6);     
+	    bst.put(4, 4);       
+	    bst.put(5, 5); 
+	    assertEquals(null,bst.select(-1));
+	    assertEquals(null,bst.select(bst.size()));
+	    assertEquals(8,(int)bst.select(7));
+	    
+	    assertEquals(5,(int)bst.select(4));
+	    assertEquals(4,(int)bst.select(3));
+	    assertEquals(3,(int)bst.select(2));
+	    assertEquals(6,(int)bst.select(5));
+	    assertEquals(7,(int)bst.select(6));
+	    assertEquals(2,(int)bst.select(1));
+	   
+		
+	}
+	
+	
+	
   //TODO write more tests here.
 	@Test
 	public void Testheight() {
@@ -110,6 +159,12 @@ public class BSTTest
     		 		"  -null\n";
      assertEquals(test1,bst.prettyPrintKeys());
      bst.put(8, 8);       //   | |   |-null
+     String test2= "-7\n" +
+		 			" |-null\n" +
+		 			"  -8\n" +
+		 			"   |-null\n" +
+		 			"    -null\n";
+     assertEquals(test2,bst.prettyPrintKeys());
      bst.put(3, 3);       //   | |    -null
      bst.put(1, 1);       //   |  -6
      bst.put(2, 2);       //   |   |-4
@@ -150,7 +205,14 @@ public class BSTTest
          bst.delete(1);
          assertEquals("Deleting from empty tree", "()", bst.printKeysInOrder());
          
-         bst.put(7, 7);   //        _7_
+         bst.put(7, 7);   // 
+         bst.delete(7);
+         assertEquals("()", bst.printKeysInOrder());
+         bst.put(7, 7);
+         bst.put(3, 3);  
+         bst.delete(3);
+         assertEquals("(()7())", bst.printKeysInOrder());
+         bst.put(3, 3);
          bst.put(8, 8);   //      /     \
          bst.put(3, 3);   //    _3_      8
          bst.put(1, 1);   //  /     \
@@ -177,7 +239,82 @@ public class BSTTest
          bst.delete(3);
          assertEquals("Deleting node with two children",
                  "(((()1())2(()4(()5())))7())", bst.printKeysInOrder());
+         
+         
+         BST<Integer, Integer> bst1 = new BST<Integer, Integer>();
+         bst1.put(7, 7);  
+         bst1.put(20, 20);  
+         bst1.put(3, 3);
+         bst1.put(13, 13);
+         bst1.put(4, 4);
+         bst1.put(5, 5);
+         bst1.put(15, 15);
+         bst1.delete(13);
+         assertEquals("((()3(()4(()5())))7((()15())20()))", bst1.printKeysInOrder());
+         bst1.delete(4);
+         assertEquals("((()3(()5()))7((()15())20()))", bst1.printKeysInOrder());
+         bst1.delete(3);
+         assertEquals("((()5())7((()15())20()))", bst1.printKeysInOrder());
+         bst1.put(10, 10);
+         bst1.delete(15);
+         assertEquals("((()5())7((()10())20()))", bst1.printKeysInOrder());
+         bst1.put(3, 3);
+         bst1.delete(7);
+         assertEquals("((()3())5((()10())20()))", bst1.printKeysInOrder());
+         
+         BST<Integer, Integer> bst2 = new BST<Integer, Integer>();
+         bst2.put(7, 7);  
+         bst2.put(3, 3);
+         bst2.delete(7);
+         assertEquals("(()3())", bst2.printKeysInOrder());
+         bst2.put(4, 4);
+         bst2.delete(3);
+         assertEquals("(()4())", bst2.printKeysInOrder());
+         bst2.put(1, 1);
+         bst2.put(2, 2);
+         bst2.put(5, 5);
+         bst2.delete(4);
+         assertEquals("((()1())2(()5()))", bst2.printKeysInOrder());
+         
+         
+         BST<Integer, Integer> bst3= new BST<Integer, Integer>();
+         bst3.put(7, 7);
+         bst3.put(3, 3);
+         bst3.put(1, 1);
+         bst3.put(5, 5);
+         bst3.put(4, 4);
+         bst3.put(20, 20);
+         bst3.delete(3);
+         assertEquals("((()1((()4())5()))7(()20()))", bst3.printKeysInOrder());
+
+         BST<Integer, Integer> bst4= new BST<Integer, Integer>();
+         bst4.put(7, 7);
+         bst4.put(6, 6);
+         bst4.put(1, 1);
+         bst4.put(2, 2);
+         bst4.put(4, 4);
+         bst4.put(3, 3);
+         bst4.put(20, 20);
+         bst4.delete(6);
+         assertEquals("((()1(()2((()3())4())))7(()20()))", bst4.printKeysInOrder());
+         
         
      }
      
+     @Test
+     public void TestgetKey() {
+    	 BST<Integer, Integer> bst = new BST<Integer, Integer>();
+    	 assertEquals(null,bst.getKey(1));
+     }
+     
+     @Test
+     public void TestgetParent() {
+    	 BST<Integer, Integer> bst = new BST<Integer, Integer>();
+    	 assertEquals(null,bst.getParent(7));
+    	 bst.put(7, 7); 
+    	 bst.put(8, 8);
+    	 //assertEquals(7,bst.getParent(8).getNode().getKey());
+     }
+     
+   
 }
